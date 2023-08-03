@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/nullstyle.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<title>task0</title>
+	</head>
+	<body>
+		<main class="page">
+			<div class="page__container">
+				<div class="task">
+					<div class="task__condition text">Задача 1. Описати масив об’єктів – сайтів розроблених компанією з такими властивостями</div>
+				</div>
+				<script>
+					let websites = [
+						{
+							companyName: "websiteOne",
+							owner: "Andri",
+							sponsors: [
+								{
+									surname: "Alexio",
+									sponsorName: " Alex",
+									sponsorInvestment: 12000,
+								},
+								{
+									surname: "Johnson",
+									sponsorName: "John",
+									sponsorInvestment: 31000,
+								},
+							],
+							yearOutput: 2010,
+							siteCost: 1999,
+						},
+						{
+							companyName: "websiteTwo",
+							owner: "Vasil",
+							sponsors: [
+								{
+									surname: "Ivanenko",
+									sponsorName: "Ivan",
+									sponsorInvestment: 35000,
+								},
+								{
+									surname: "Petrovich",
+									sponsorName: "Petro",
+									sponsorInvestment: 9900,
+								},
+								{
+									surname: "Tarasovich",
+									sponsorName: "Taras",
+									sponsorInvestment: 8800,
+								},
+							],
+							yearOutput: 2008,
+							siteCost: 9999,
+						},
+						{
+							companyName: "websiteThree",
+							owner: "Igor",
+							sponsors: [
+								{
+									surname: "Olexandrovich",
+									sponsorName: "Olexandr",
+									sponsorInvestment: 670000,
+								},
+							],
+							yearOutput: 2001,
+							siteCost: 10001,
+						},
+					]
+					//================================================
+					//=====1) загальну вартість усіх сайтів===========
+					//================================================
+					let overalSitesCost = websites.reduce((prevSum, site) => prevSum + site.siteCost, 0)
+					document.write(`загальна вартість усіх сайтів = ${overalSitesCost} <br/>`)
+					//================================================
+					//=====2) кількість сайтів, що було зроблено між 2000 та 2009 рр.===========
+					//================================================
+					let sitesCountAmountYears = websites.reduce((prevcount, site) => (site.yearOutput > 2000 && site.yearOutput < 2009 ? prevcount + 1 : prevcount), 0)
+					document.write(`кількість сайтів, що було зроблено між 2000 та 2009 рр  = ${sitesCountAmountYears} <br/>`)
+					//================================================
+					//=====3) кількість сайтів, де сума спонсорських вкладень була більшою за 100000===========
+					//================================================
+					function getSitesWithInvestmentMoreThen100000(websites) {
+						let count = 0
+						for (let website of websites) {
+							for (let sponsor of website.sponsors) {
+								if (sponsor["sponsorInvestment"] > 100000) count++
+							}
+						}
+						return count
+					}
+					let sitesWithInvestmentMoreThen100000 = getSitesWithInvestmentMoreThen100000(websites)
+					document.write(`кількість сайтів, де сума спонсорських вкладень була більшою за 100000 = ${sitesWithInvestmentMoreThen100000} <br/>`)
+					//================================================
+					//=====4) створити загальний список усіх спонсорів (поки можуть повторюватись, просто зібрати усі у масив)===========
+					//================================================
+					function getSponsorsArray(websites) {
+						let arr = []
+						for (let website of websites) {
+							for (let sponsor of website.sponsors) {
+								arr.push(sponsor.sponsorName)
+							}
+						}
+						return arr
+					}
+					let sponsorsArray = getSponsorsArray(websites)
+					document.write(`загальний список усіх спонсорів = ${sponsorsArray} <br/>`)
+					//================================================
+					//=====5) знайти рік, коли прибуток був найбільшим===========
+					//================================================
+					function getYearOfMaxIncome(websites) {
+						//let maxYear = websites[0].yearOutput
+						//// працює
+						//let prevLastInx = websites.length - 2
+						//for (let i = 0; i <= prevLastInx; i++) {
+						//	if (websites[i].siteCost < websites[i + 1].siteCost) maxYear = websites[i + 1].yearOutput
+						//}
+						//===================================
+						//let maxYear
+						//websites.reduce((prevSiteCost, website) => {
+						//	if (website.siteCost > prevSiteCost) {
+						//		prevSiteCost = website.siteCost
+						//		maxYear = website.yearOutput
+						//	} else prevSiteCost
+						//	return prevSiteCost
+						//}, -Infinity)
+
+						let maxYear = websites.reduce((prevSiteCost, website) => (website.siteCost > prevSiteCost.siteCost ? website : prevSiteCost))
+						return maxYear.yearOutput
+					}
+					let yearOfMaxIncome = getYearOfMaxIncome(websites)
+					document.write(`рік, коли прибуток був найбільшим =  ${yearOfMaxIncome} <br/>`)
+					//================================================
+					//=====6) упорядкувати список за спаданням прибутку===========
+					//================================================
+					function getArrByDeclineOfIcome(websites) {
+						let websitesCopy = JSON.parse(JSON.stringify(websites))
+						for (let i = 1; i < websitesCopy.length; i++) {
+							let curIcome = websitesCopy[i].siteCost
+							let curIndex = websitesCopy[i]
+							let prevIndex = i - 1
+							while (prevIndex >= 0 && curIcome > websitesCopy[prevIndex].siteCost) {
+								websitesCopy[prevIndex + 1] = websitesCopy[prevIndex]
+								prevIndex -= 1
+							}
+							websitesCopy[prevIndex + 1] = curIndex
+						}
+						return websitesCopy
+					}
+					let arrByDeclineOfIcome = getArrByDeclineOfIcome(websites)
+					// тут виведу в консоль бо тут важко вивести в doc.write
+					console.log("завдання 6. (вже посортоване)")
+					console.log(arrByDeclineOfIcome)
+					console.log("================================")
+					//================================================
+					//=====7) Створити 2 окремих списки з копіями об’єктів, що містять сайти з вартість до 10000 і більше 10000===========
+					//================================================
+					function getSitesWichCostMoreThen10000(websites) {
+						let newArr = websites.filter((website) => website.siteCost > 10000)
+						return newArr
+					}
+					let sitesWichCostMoreThen10000 = getSitesWichCostMoreThen10000(websites)
+					console.log("задача 7. сайти сайти з вартість більше 10000")
+					console.log(sitesWichCostMoreThen10000)
+					console.log("=========================================")
+
+					function getSitesWichCostLessThen10000(websites) {
+						let newArr = websites.filter((website) => website.siteCost < 10000)
+						return newArr
+					}
+					let sitesWichCostLessThen10000 = getSitesWichCostLessThen10000(websites)
+					console.log("задача 7. сайти сайти з вартість до 10000")
+					console.log(sitesWichCostLessThen10000)
+					console.log("=========================================")
+				</script>
+			</div>
+		</main>
+	</body>
+</html>
